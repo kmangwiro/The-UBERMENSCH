@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+</head>
+<body class="bg-gray-200 font-sans">
+
+<!-- Sidebar -->
+<div class="fixed inset-y-0 left-0 w-64 bg-gradient-to-r from-indigo-600 to-blue-500 text-white shadow-lg">
+    <div class="p-6">
+        <h1 class="text-2xl font-bold mb-6">Demand Forecast</h1>
+        <nav class="space-y-6">
+            <!-- Menu Item -->
+            <a href="/forecasting" class="block py-3 px-4 rounded-xl hover:bg-indigo-700 hover:shadow-lg transition duration-200 ease-in-out flex items-center">
+                <i class="fas fa-chart-line mr-4 text-lg"></i> Forecasting
+            </a>
+            <!-- Menu Item -->
+            <a href="#" class="block py-3 px-4 rounded-xl hover:bg-indigo-700 hover:shadow-lg transition duration-200 ease-in-out flex items-center">
+                <i class="fas fa-chart-pie mr-4 text-lg"></i> Trends
+            </a>
+            <!-- Menu Item -->
+            <a href="#" class="block py-3 px-4 rounded-xl hover:bg-indigo-700 hover:shadow-lg transition duration-200 ease-in-out flex items-center">
+                <i class="fas fa-cogs mr-4 text-lg"></i> Settings
+            </a>
+            <!-- Menu Item -->
+            <a href="/" class="block py-3 px-4 rounded-xl hover:bg-indigo-700 hover:shadow-lg transition duration-200 ease-in-out flex items-center">
+                <i class="fas fa-home mr-4 text-lg"></i> Logout
+            </a>
+        </nav>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="ml-64 p-6">
+    <header class="mb-8">
+        <h2 class="text-3xl font-bold text-gray-800">Dashboard Overview</h2>
+        <p class="text-gray-600 mt-2">
+            Welcome to the Demand Forecasting Dashboard. Monitor key metrics and trends in real time.
+        </p>
+    </header>
+
+    <!-- Primary Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Forecasted Sales Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-700">Forecasted Sales</h3>
+                <i class="fas fa-chart-line text-indigo-600 text-2xl"></i>
+            </div>
+            <div class="mt-4 h-64">
+                <canvas id="forecastChart" class="w-full h-full"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Trends Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-700">Recent Trends</h3>
+                <i class="fas fa-chart-area text-green-600 text-2xl"></i>
+            </div>
+            <div class="mt-4 h-64">
+                <canvas id="trendChart" class="w-full h-full"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytical Graphs Section -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Sales Distribution Pie Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-700">Sales Distribution by Product</h3>
+                <i class="fas fa-chart-pie text-purple-600 text-2xl"></i>
+            </div>
+            <div class="mt-4 h-64">
+                <canvas id="pieChart" class="w-full h-full"></canvas>
+            </div>
+        </div>
+        <!-- Monthly Growth Bar Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-700">Monthly Growth Rate</h3>
+                <i class="fas fa-chart-bar text-red-600 text-2xl"></i>
+            </div>
+            <div class="mt-4 h-64">
+                <canvas id="growthChart" class="w-full h-full"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Include Chart.js Zoom Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
+<script>
+    // Forecasted Sales Chart (Line Chart)
+    const ctx1 = document.getElementById('forecastChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+            datasets: [{
+                label: 'Sales',
+                data: [100, 200, 300, 250, 350],
+                borderColor: '#6366F1',
+                backgroundColor: 'rgba(99,102,241,0.2)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                zoom: {
+                    pan: {enabled: true, mode: 'x', speed: 10},
+                    zoom: {wheel: {enabled: true}, pinch: {enabled: true}, mode: 'x'}
+                }
+            }
+        }
+    });
+
+    // Recent Trends Chart (Bar Chart)
+    const ctx2 = document.getElementById('trendChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+            datasets: [{
+                label: 'Trend',
+                data: [80, 150, 250, 200, 300],
+                backgroundColor: '#10B981'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                zoom: {
+                    pan: {enabled: true, mode: 'x', speed: 10},
+                    zoom: {wheel: {enabled: true}, pinch: {enabled: true}, mode: 'x'}
+                }
+            }
+        }
+    });
+
+    // Sales Distribution Pie Chart
+    const ctx3 = document.getElementById('pieChart').getContext('2d');
+    new Chart(ctx3, {
+        type: 'pie',
+        data: {
+            labels: ['Product A', 'Product B', 'Product C', 'Product D'],
+            datasets: [{
+                data: [30, 25, 25, 20],
+                backgroundColor: ['#F87171', '#FBBF24', '#34D399', '#60A5FA']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Monthly Growth Bar Chart
+    const ctx4 = document.getElementById('growthChart').getContext('2d');
+    new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+            datasets: [{
+                label: 'Growth Rate (%)',
+                data: [5, 7, 3, 8, 6],
+                backgroundColor: '#EF4444'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {beginAtZero: true}
+            }
+        }
+    });
+</script>
+</body>
+</html>

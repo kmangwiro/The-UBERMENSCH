@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forecasting</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+  </style>
+</head>
+<body class="font-sans text-gray-900 flex">
+
+  <!-- Sidebar Menu -->
+  <aside class="w-64 bg-white shadow-lg h-screen fixed">
+    <div class="p-6 text-center border-b">
+      <h2 class="text-2xl font-bold text-gray-800">📊 Forecasting App</h2>
+    </div>
+    <nav class="mt-6">
+      <ul>
+        <li class="px-6 py-4 hover:bg-gray-100 transition duration-300">
+          <a href="/dashboard" class="flex items-center space-x-3 text-gray-700">
+            <i class="fa fa-home text-lg"></i>
+            <span class="text-lg">Dashboard</span>
+          </a>
+        </li>
+        <li class="px-6 py-4 bg-blue-100 border-l-4 border-blue-500">
+          <a href="/forecasting" class="flex items-center space-x-3 text-blue-700 font-semibold">
+            <i class="fa fa-chart-bar text-lg"></i>
+            <span class="text-lg">Forecasting</span>
+          </a>
+        </li>
+        <li class="px-6 py-4 hover:bg-gray-100 transition duration-300">
+          <a href="/logout" class="flex items-center space-x-3 text-gray-700">
+            <i class="fa fa-sign-out-alt text-lg"></i>
+            <span class="text-lg">Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="ml-64 flex justify-center items-center min-h-screen p-6 w-full">
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-xl p-8">
+
+      <header class="text-center mb-6">
+        <h2 class="text-4xl font-bold text-gray-800">📊 Demand Forecasting</h2>
+        <p class="text-lg text-gray-600 mt-2">Upload your dataset to forecast demand based on association rules.</p>
+      </header>
+
+      <div class="bg-gray-100 p-6 rounded-lg shadow-sm">
+        <form id="uploadForm" enctype="multipart/form-data" class="space-y-4" method="POST">
+          <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+            <label for="fileUpload" class="w-full flex flex-col items-center px-4 py-6 bg-white text-blue-600 border border-blue-300 rounded-lg shadow-md cursor-pointer hover:bg-blue-50 transition duration-300">
+              <i class="fa fa-upload text-3xl"></i>
+              <span class="mt-2 text-sm font-medium">Choose a CSV or Excel file</span>
+              <input type="file" name="file" id="fileUpload" class="hidden" accept=".csv, .xlsx" />
+            </label>
+            <button type="submit" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-lg shadow-md hover:scale-105 transform transition duration-300">
+              <i class="fa fa-paper-plane"></i> Upload
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {% if forecast_data and forecast_data['labels'] and forecast_data['values'] %}
+        <div class="mt-6 p-6 bg-gray-50 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-gray-800 text-center">📈 Forecasted Associations</h3>
+          <canvas id="forecastChart" class="w-full h-96 mt-3"></canvas>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const labels = {{ forecast_data['labels'] | tojson }};
+            const values = {{ forecast_data['values'] | tojson }};
+
+            new Chart(document.getElementById("forecastChart"), {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Confidence Score',
+                  data: values,
+                  backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                  borderColor: 'rgba(99, 102, 241, 1)',
+                  borderWidth: 2,
+                  hoverBackgroundColor: 'rgba(67, 56, 202, 0.8)'
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: { display: true }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(200, 200, 200, 0.3)' }
+                  },
+                  x: {
+                    grid: { color: 'rgba(200, 200, 200, 0.3)' }
+                  }
+                }
+              }
+            });
+          });
+        </script>
+
+      {% else %}
+        <p class="text-red-500 mt-4 text-center">⚠️ No forecast data available. Try uploading a dataset.</p>
+      {% endif %}
+
+    </div>
+  </div>
+
+</body>
+</html>
