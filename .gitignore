@@ -1,0 +1,14 @@
+# Ignore build and dependency folders
+target/
+node_modules/
+dist/
+build/
+
+# Ignore IDE/project files
+.idea/
+.vscode/
+*.iml
+
+# Ignore OS junk
+.DS_Store
+Thumbs.db
